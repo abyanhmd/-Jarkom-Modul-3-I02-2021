@@ -4,6 +4,101 @@
 - Abyan Ahmad (05111942000013)
 - Zulfiqar Rahman Aji (05111942000019)
 
+## Problem 1
+First of all, install all the requirement for each non-client node.
+
+**Enieslobby - DNS Server**
+```shell
+apt-get install bind9 -y
+apt-get install dnsutils -y
+```
+
+**Jipangu - DHCP Server**
+```shell
+apt-get install isc-dhcp-sever -y
+```
+
+After installing the `isc-dhcp-server`, don't forget to make the interface of Jipangu in /etc/default/isc-dhcp-server to be `eth0` because `eth0` connects Jipangu to the router above it.
+
+**Water7 - Proxy Server**
+```shell
+apt-get install squid
+```
+
+<br>
+
+## Problem 2
+Install isc-dhcp-relay in Foosha.
+```shell
+apt-get install isc-dhcp-relay -y
+```
+
+Make the server as `192.209.2.4` or the IP of Jipangu and the interface as `eth1 eth2 eth3` because Foosha is connected to those three ethernet. After the installation is completed, restart the `isc-dhcp-relay`.
+```shell
+service isc-dhcp-relay restart
+```
+
+In Jipangu, add this script in */etc/dhcp/dhcpd.conf*. This script basically points out the subnet of Jipangu that is connected with its router that is also connected with Foosha, its relay.
+```shell
+subnet 192.209.2.0 netmask 255.255.255.0 {
+    option routers 192.209.2.1;
+}
+```
+
+<br>
+
+## Problem 3
+Set dynamic IP address in /etc/network/interfaces of each client node.
+```properties
+auto eth0
+iface eth0 inet dhcp
+```
+
+Add this script in */etc/dhcp/dhcpd.conf*.
+```shell
+subnet 192.209.1.0 netmask 255.255.255.0 {
+    range 192.209.1.20 192.209.1.99;
+    range 192.209.1.150 192.209.1.169;
+    option routers 192.209.1.1;
+    option broadcast-address 192.209.1.255;
+    default-lease-time 360;
+    max-lease-time 7200;
+}
+```
+
+After adding the script, restart `isc-dhcp-server` in Jipangu.
+```shell
+service isc-dhcp-server restart
+```
+
+Testing it with one of the client.
+
+![3_Client-IP](/Screenshot/3_Client-IP.png)
+
+<br>
+
+## Problem 4
+Add this script in */etc/dhcp/dhcpd.conf*.
+```shell
+subnet 192.209.3.0 netmask 255.255.255.0 {
+    range 192.209.3.30 192.209.3.50;
+    option routers 192.209.3.1;
+    option broadcast-address 192.209.3.255;
+    default-lease-time 720;
+    max-lease-time 7200;
+}
+```
+
+After adding the script, restart `isc-dhcp-server` in Jipangu.
+```shell
+service isc-dhcp-server restart
+```
+
+Testing it with one of the client.
+
+![4_Client-IP](/Screenshot/4_Client-IP.png)
+
+<br>
 
 ## Problem 9
 In Skypie, add this script in */etc/squid/squid.conf* under the conf that was added before.
