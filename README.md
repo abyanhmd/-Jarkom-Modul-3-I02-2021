@@ -28,7 +28,7 @@ apt-get install squid
 <br>
 
 ## Problem 2
-Install isc-dhcp-relay in Foosha.
+Install `isc-dhcp-relay` in Foosha.
 ```shell
 apt-get install isc-dhcp-relay -y
 ```
@@ -48,7 +48,7 @@ subnet 192.209.2.0 netmask 255.255.255.0 {
 <br>
 
 ## Problem 3
-Set dynamic IP address in /etc/network/interfaces of each client node.
+Set dynamic IP address in */etc/network/interfaces* of each client node.
 ```properties
 auto eth0
 iface eth0 inet dhcp
