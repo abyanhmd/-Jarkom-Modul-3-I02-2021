@@ -100,6 +100,74 @@ Testing it with one of the client.
 
 <br>
 
+## Problem 5
+In Enieslobby, add this script inside */etc/bind/named.conf.options*.
+shell
+forwarders {
+ 192.168.122.1;
+};
+// dnssec-validation auto;
+allow-query { any; };
+
+After that, each client has internet connection and be able to update or download.
+
+<br>
+
+## Problem 6
+From the script of the problem above, default-lease-time and max-lease-time are already inputted in second unit.
+shell
+subnet 192.209.1.0 netmask 255.255.255.0 {
+    range 192.209.1.20 192.209.1.99;
+    range 192.209.1.150 192.209.1.169;
+    option routers 192.209.1.1;
+    option broadcast-address 192.209.1.255;
+    default-lease-time 360;
+    max-lease-time 7200;
+}
+
+subnet 192.209.3.0 netmask 255.255.255.0 {
+    range 192.209.3.30 192.209.3.50;
+    option routers 192.209.3.1;
+    option broadcast-address 192.209.3.255;
+    default-lease-time 720;
+    max-lease-time 7200;
+}
+
+<br>
+
+## Problem 7
+In Jipangu, add this script in */etc/dhcp/dhcpd.conf*.
+shell
+host Skypie {
+    hardware ethernet 1e:f1:c3:fa:ec:c6;
+    fixed-address 192.209.3.69;
+}
+
+The hardware address can be found in Skypie node with this command.
+
+![7_HWaddr-Skypie](/Screenshot/7_HWaddr-Skypie.png)
+
+In Skypie, add this script in */etc/network/interfaces*. This script is stating Skypie's hardware address in the network interface.
+properties
+auto eth0
+iface eth0 inet dhcp
+
+hwaddress ether 1e:f1:c3:fa:ec:c6
+
+Testing it with Skypie using `ifconfig`.
+
+![7_Client-IP](/Screenshot/7_Client-IP.png)
+
+<br>
+
+## Problem 8
+In Skypie, add this script in */etc/squid/squid.conf*. This script is stating 
+shell
+http_port 5000
+visible_hostname jualbelikapal.i02.com
+
+<br>
+
 ## Problem 9
 In Skypie, add this script in */etc/squid/squid.conf* under the conf that was added before.
 ```shell
